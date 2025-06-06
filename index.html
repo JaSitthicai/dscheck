@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <title>ค้นหาชื่อแบบทันที (จากไฟล์ .txt)</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 40px;
+    }
+    input {
+      padding: 8px;
+      width: 300px;
+    }
+    #results {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>ค้นหาชื่อ</h2>
+
+  <input type="text" id="searchInput" placeholder="พิมพ์ชื่อที่ต้องการ..." oninput="searchName()">
+
+  <div id="results"></div>
+
+  <script>
+    let names = [];
+
+    // โหลดข้อมูลจากไฟล์ names.txt
+    fetch('names.txt')
+      .then(response => response.text())
+      .then(data => {
+        names = data.split('\n').map(line => line.trim()).filter(line => line.length > 0);
+      })
+      .catch(error => {
+        console.error('โหลดไฟล์ไม่สำเร็จ:', error);
+        document.getElementById("results").innerHTML = "<p style='color:red;'>โหลด names.txt ไม่สำเร็จ</p>";
+      });
+
+    function searchName() {
+      const input = document.getElementById("searchInput").value.trim();
+      const resultDiv = document.getElementById("results");
+      resultDiv.innerHTML = "";
+
+      if (input === "") return; // ถ้าไม่มี input → ไม่แสดงอะไรเลย
+
+      const matches = names.filter(name => name.includes(input));
+
+      if (matches.length > 0) {
+        matches.forEach(name => {
+          const p = document.createElement("p");
+          p.textContent = name;
+          resultDiv.appendChild(p);
+        });
+      } else {
+        resultDiv.innerHTML = "<p>ไม่พบชื่อที่ค้นหา</p>";
+      }
+    }
+  </script>
+
+</body>
+</html>
